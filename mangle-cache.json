@@ -1,5 +1,6 @@
 {
   "nestedLocales$_": "_n",
   "flatLocales_": "_f",
-  "localeFns_": "_l"
+  "localeFns_": "_l",
+  "getFlatLocale_": "_g"
 }
