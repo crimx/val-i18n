@@ -20,4 +20,13 @@ describe("i18n", () => {
     expect(i18n.t).not.toBe(enT);
     expect(i18n.t("apple")).toBe("苹果");
   });
+
+  it("should parse message template", () => {
+    const i18n = new I18n("en", {
+      en: { intro: "{{name}} eats {{fruit}}" },
+    });
+    expect(i18n.t("intro", { name: "CRIMX", fruit: "apple" })).toBe(
+      "CRIMX eats apple"
+    );
+  });
 });
