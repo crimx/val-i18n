@@ -1,52 +1,24 @@
 import type { ReadonlyVal, Val } from "value-enhancer";
-import { combine } from "value-enhancer";
-import { derive, val } from "value-enhancer";
-import type { LocaleLang, TFunction } from "./interface";
+import type { LocaleLang, NestedLocales, TFunction } from "./interface";
+import type { FlatLocale, FlatLocales } from "./flat-locales";
 import type { LocaleTemplateMessageFn } from "./template-message";
+
+import { val, derive, combine } from "value-enhancer";
+import { flattenLocale } from "./flat-locales";
 import { createTemplateMessageFn } from "./template-message";
 import { insert } from "./utils";
-
-export type TFunctionObservable = ReadonlyVal<TFunction>;
-
-export type LocaleLangObservable = ReadonlyVal<LocaleLang>;
-
-export type Locale = { [key: string]: string | Locale };
-
-export type Locales = Record<LocaleLang, Locale>;
 
 export interface I18nConfig<TLang extends LocaleLang = LocaleLang> {
   /** current locale language */
   lang: TLang;
-  locales: Locales;
+  locales: NestedLocales;
 }
-
-type FlatLocale = Map<string, string>;
-
-type FlatLocales = Map<LocaleLang, FlatLocale>;
-
-/**
- * Turns a nested locale object into a flat locale object.
- */
-const flattenLocale = (
-  locale: Locale = {},
-  flatLocale: FlatLocale = new Map(),
-  prefix = ""
-): FlatLocale => {
-  for (const [key, value] of Object.entries(locale)) {
-    if (typeof value === "string") {
-      flatLocale.set(prefix + key, value);
-    } else {
-      flattenLocale(value, flatLocale, prefix + key + ".");
-    }
-  }
-  return flatLocale;
-};
 
 export class I18n<TLang extends LocaleLang = LocaleLang> {
   public readonly lang$: Val<TLang>;
   public readonly t$: ReadonlyVal<TFunction>;
 
-  private nestedLocales$_: Val<Locales>;
+  private nestedLocales$_: Val<NestedLocales>;
   private flatLocales_: FlatLocales;
   private localeFns_: WeakMap<FlatLocale, LocaleTemplateMessageFn>;
 
@@ -97,7 +69,7 @@ export class I18n<TLang extends LocaleLang = LocaleLang> {
     this.lang$.set(lang);
   }
 
-  public addLocales(locales: Locales): void {
+  public addLocales(locales: NestedLocales): void {
     for (const lang of Object.keys(locales)) {
       this.flatLocales_.delete(lang);
     }
