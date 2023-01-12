@@ -3,7 +3,7 @@ export type TArgs = Record<string, string>;
 
 export type TemplateMessageFn = (args: TArgs) => string;
 
-export type LocaleTemplateMessageFn = Map<string, TemplateMessageFn>;
+export type LocaleTemplateMessageFns = Map<string, TemplateMessageFn>;
 
 /**
  * Create an interpreter function for template locale message.

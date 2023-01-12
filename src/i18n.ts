@@ -1,7 +1,8 @@
 import type { ReadonlyVal, Val } from "value-enhancer";
+import { derive } from "value-enhancer";
 import type { LocaleLang, NestedLocales, TFunction } from "./interface";
-import type { FlatLocale, FlatLocales } from "./flat-locales";
-import type { LocaleTemplateMessageFn } from "./template-message";
+import type { FlatLocales } from "./flat-locales";
+import type { LocaleTemplateMessageFns } from "./template-message";
 
 import { val, combine } from "value-enhancer";
 import { flattenLocale } from "./flat-locales";
@@ -12,9 +13,9 @@ export class I18n {
   public readonly lang$: Val<LocaleLang>;
   public readonly t$: ReadonlyVal<TFunction>;
 
-  private nestedLocales$_: Val<NestedLocales>;
-  private flatLocales_: FlatLocales;
-  private localeFns_: Map<LocaleLang, LocaleTemplateMessageFn>;
+  private readonly nestedLocales$_: Val<NestedLocales>;
+  private readonly flatLocales_: FlatLocales;
+  private readonly localeFns_: LocaleTemplateMessageFns;
 
   public constructor(lang: LocaleLang, locales: NestedLocales) {
     this.nestedLocales$_ = val(locales);
@@ -23,24 +24,29 @@ export class I18n {
 
     this.lang$ = val(lang);
 
-    this.t$ = combine([this.lang$, this.nestedLocales$_], ([lang]) => {
-      const flatLocale = this.getFlatLocale_(lang);
+    const currentNestedLocale$ = combine(
+      [this.lang$, this.nestedLocales$_],
+      ([lang, nestedLocales]) => nestedLocales[lang]
+    );
 
-      const localeFn =
-        this.localeFns_.get(lang) || insert(this.localeFns_, lang, new Map());
+    this.t$ = derive(currentNestedLocale$, currentNestedLocale => {
+      this.flatLocales_.clear();
+      this.localeFns_.clear();
+
+      flattenLocale(currentNestedLocale, this.flatLocales_);
 
       return (key: string, args?: Record<string, string>): string => {
         if (args) {
           const fn =
-            localeFn.get(key) ||
+            this.localeFns_.get(key) ||
             insert(
-              localeFn,
+              this.localeFns_,
               key,
-              createTemplateMessageFn(flatLocale.get(key) || key)
+              createTemplateMessageFn(this.flatLocales_.get(key) || key)
             );
           return fn(args);
         }
-        return flatLocale.get(key) || key;
+        return this.flatLocales_.get(key) || key;
       };
     });
   }
@@ -64,35 +70,20 @@ export class I18n {
   }
 
   /**
-   * @returns — boolean indicating whether a message with the specified key and language exists or not.
+   * @returns — boolean indicating whether a message with the specified key in current language exists or not.
    */
-  public hasMessage(key: string, lang = this.lang): boolean {
-    return this.getFlatLocale_(lang).has(key);
+  public hasKey(key: string): boolean {
+    return this.flatLocales_.has(key);
   }
 
   /**
-   * @returns — boolean indicating whether a locale pack with the specified language exists or not.
+   * @returns — boolean indicating whether a locale pack of the specified language exists or not.
    */
   public hasLocale(lang: LocaleLang): boolean {
     return !!this.nestedLocales$_.value[lang];
   }
 
   public addLocales(locales: NestedLocales): void {
-    for (const lang of Object.keys(locales)) {
-      this.flatLocales_.delete(lang);
-      this.localeFns_.delete(lang);
-    }
     this.nestedLocales$_.set({ ...this.nestedLocales$_.value, ...locales });
-  }
-
-  private getFlatLocale_(lang: LocaleLang): FlatLocale {
-    return (
-      this.flatLocales_.get(lang) ||
-      insert(
-        this.flatLocales_,
-        lang,
-        flattenLocale(this.nestedLocales$_.value[lang])
-      )
-    );
   }
 }
