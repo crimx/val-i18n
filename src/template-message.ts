@@ -22,6 +22,11 @@ export const createTemplateMessageFn = (message: string): TemplateMessageFn => {
     pointer = slice.index + slice[0].length;
   }
   slices.push(message.slice(pointer));
+
+  if (keys.length <= 0) {
+    return () => message;
+  }
+
   return (args: TArgs): string => {
     for (let i = keys.length - 1; i >= 0; i--) {
       slices[i * 2 + 1] = args[keys[i]] || keys[i];

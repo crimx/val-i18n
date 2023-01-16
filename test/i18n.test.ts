@@ -29,4 +29,41 @@ describe("i18n", () => {
       "CRIMX eats apple"
     );
   });
+
+  it("should support array as args", () => {
+    const i18n = new I18n("en", {
+      en: { intro: "{{0}} eats {{1}}" },
+    });
+    expect(i18n.t("intro", ["CRIMX", "apple"])).toBe("CRIMX eats apple");
+  });
+
+  it("should pick option message", () => {
+    const option = (n: number) => (n <= 5 ? "few" : "many");
+
+    const i18n = new I18n("en", {
+      en: {
+        apple: {
+          few: "Few apples",
+          many: "Many apples",
+        },
+      },
+    });
+    expect(i18n.t("apple", { ":option": option(1) })).toBe("Few apples");
+    expect(i18n.t("apple", { ":option": option(6) })).toBe("Many apples");
+  });
+
+  it("should pick plural message", () => {
+    const i18n = new I18n("en", {
+      en: {
+        apple: {
+          0: "No apple",
+          1: "An apple",
+          other: "{{:option}} apples",
+        },
+      },
+    });
+    expect(i18n.t("apple", { ":option": 0 })).toBe("No apple");
+    expect(i18n.t("apple", { ":option": 1 })).toBe("An apple");
+    expect(i18n.t("apple", { ":option": 3 })).toBe("3 apples");
+  });
 });

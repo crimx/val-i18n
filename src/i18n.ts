@@ -37,16 +37,21 @@ export class I18n {
 
       return (key: string, args?: Record<string, string>): string => {
         if (args) {
+          const option = args[":option"];
+          if (option != null) {
+            const newKey = `${key}.${option}`;
+            key = this.flatLocales_.has(newKey) ? newKey : `${key}.other`;
+          }
           const fn =
             this.localeFns_.get(key) ||
             insert(
               this.localeFns_,
               key,
-              createTemplateMessageFn(this.flatLocales_.get(key) || key)
+              createTemplateMessageFn(this.flatLocales_.get(key) || "")
             );
           return fn(args);
         }
-        return this.flatLocales_.get(key) || key;
+        return this.flatLocales_.get(key) || "";
       };
     });
   }
