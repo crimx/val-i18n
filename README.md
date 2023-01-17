@@ -1,5 +1,9 @@
 # [val-18n](https://github.com/crimx/val-i18n)
 
+<p align="center">
+  <img width="200" src="https://raw.githubusercontent.com/crimx/val-i18n/main/assets/val-i18n.svg">
+</p>
+
 [![Build Status](https://github.com/crimx/val-i18n/actions/workflows/build.yml/badge.svg)](https://github.com/crimx/val-i18n/actions/workflows/build.yml)
 [![npm-version](https://img.shields.io/npm/v/val-i18n.svg)](https://www.npmjs.com/package/val-i18n)
 [![Coverage Status](https://img.shields.io/coveralls/github/crimx/val-i18n/master)](https://coveralls.io/github/crimx/val-i18n?branch=master)
