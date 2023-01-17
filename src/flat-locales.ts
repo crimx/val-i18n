@@ -6,8 +6,8 @@ export type FlatLocales = Map<string, string>;
  * Turns a nested locale object into a flat locale object.
  */
 export const flattenLocale = (
-  locale: NestedLocale = {},
-  flatLocale: FlatLocales = new Map(),
+  locale: NestedLocale,
+  flatLocale: FlatLocales,
   prefix = ""
 ): FlatLocales => {
   for (const [key, value] of Object.entries(locale)) {
