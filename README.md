@@ -18,5 +18,113 @@ Reactive i18n with val-i18n.
 ## Install
 
 ```bash
-npm add val-18n
+npm add val-18n value-enhancer
 ```
+
+## Features
+
+- Subscribable reactive `i18n$` and `t$`.
+- Lightweight and fast `t()` translation.
+- Nested locale messages.
+- Message formatting and pluralization.
+- Easy dynamic locale loading.
+
+## Usage
+
+With static locales:
+
+```ts
+import { I18n, type Locales } from "val-i18n";
+
+const locales = {
+  en: {
+    stock: {
+      fruit: "apple",
+    },
+  },
+};
+
+const i18n = new I18n("en", locales);
+i18n.t("stock.fruit"); // apple
+```
+
+With dynamic locales:
+
+```ts
+import { I18n, type Locales } from "val-i18n";
+
+const i18n = await I18n.load("en", lang => import(`./locales/${lang}.json`));
+```
+
+### Message Formatting
+
+Message keys are surrounded by double curly brackets:
+
+```ts
+import { I18n, type Locales } from "val-i18n";
+
+const locales = {
+  en: {
+    stock: {
+      fruit: "apple",
+    },
+    fav_fruit: "I love {{fruit}}",
+  },
+};
+
+const i18n = new I18n("en", locales);
+const fruit = i18n.t("stock.fruit"); // apple
+i18n.t("fav_fruit", { fruit }); // I love apple
+```
+
+It also works with array:
+
+```ts
+import { I18n, type Locales } from "val-i18n";
+
+const locales = {
+  en: {
+    fav_fruit: "I love {{0}} and {{1}}",
+  },
+};
+
+const i18n = new I18n("en", locales);
+i18n.t("fav_fruit", ["apple", "banana"]); // I love apple and banana
+```
+
+### Pluralization
+
+Message formatting supports a special key `:option` whose value will be appended to the key-path.
+
+```ts
+i18n.t("a.b.c", { ":option": "d" });
+```
+
+It will look for `"a.b.c.d"` and fallback to `"a.b.c.other"` if not found.
+
+So for pluralization we can simply use `:option` as number count.
+
+```ts
+import { I18n, type Locales } from "val-i18n";
+
+const locales = {
+  en: {
+    apples: {
+      0: "No apple",
+      1: "An apple",
+      other: "{{:option}} apples",
+    },
+  },
+};
+
+const i18n = new I18n("en", locales);
+i18n.t("apples", { ":option": 0 }); // No apple
+i18n.t("apples", { ":option": 1 }); // An apple
+i18n.t("apples", { ":option": 3 }); // 3 apples
+```
+
+### Reactive I18n
+
+`i18n.i18n$` and `i18n.t$` are subscribable values.
+
+See [value-enhancer](https://github.com/crimx/value-enhancer#value-enhancer) for more details.
