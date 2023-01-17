@@ -1,18 +1,18 @@
 import type { NestedLocale } from "./interface";
 
-export type FlatLocales = Map<string, string>;
+export type FlatLocale = Record<string, string>;
 
 /**
  * Turns a nested locale object into a flat locale object.
  */
 export const flattenLocale = (
   locale: NestedLocale,
-  flatLocale: FlatLocales,
+  flatLocale: FlatLocale = {},
   prefix = ""
-): FlatLocales => {
+): FlatLocale => {
   for (const [key, value] of Object.entries(locale)) {
     if (typeof value === "string") {
-      flatLocale.set(prefix + key, value);
+      flatLocale[prefix + key] = value;
     } else {
       flattenLocale(value, flatLocale, prefix + key + ".");
     }
