@@ -9,7 +9,7 @@ describe("i18n", () => {
     expect(i18n.t("name")).toBe("CRIMX");
   });
 
-  it("should update t function when lang changes", () => {
+  it("should update t function when lang changes", async () => {
     const locales: Locales = {
       en: { apple: "apple" },
       zh: { apple: "苹果" },
@@ -19,7 +19,7 @@ describe("i18n", () => {
     const enT = i18n.t;
     expect(i18n.t("apple")).toBe("apple");
 
-    i18n.setLang("zh");
+    await i18n.switchLang("zh");
     expect(i18n.t).not.toBe(enT);
     expect(i18n.t("apple")).toBe("苹果");
   });

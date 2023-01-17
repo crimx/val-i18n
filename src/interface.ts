@@ -42,3 +42,7 @@ export interface I18nKeyPicker {
 export interface I18nKeyPickerPlugin {
   (nestedLocale: NestedLocale, i18n: I18n): I18nKeyPicker;
 }
+
+export interface LocaleFetcher {
+  (lang: LocaleLang): Promise<NestedLocale>;
+}

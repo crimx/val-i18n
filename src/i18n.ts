@@ -1,6 +1,11 @@
 import type { ReadonlyVal, Val } from "value-enhancer";
 import { derive } from "value-enhancer";
-import type { LocaleLang, NestedLocales, TFunction } from "./interface";
+import type {
+  LocaleFetcher,
+  LocaleLang,
+  NestedLocales,
+  TFunction,
+} from "./interface";
 import type { FlatLocales } from "./flat-locales";
 import type { LocaleTemplateMessageFns } from "./template-message";
 
@@ -9,15 +14,35 @@ import { flattenLocale } from "./flat-locales";
 import { createTemplateMessageFn } from "./template-message";
 import { insert } from "./utils";
 
+export interface I18nOptions {
+  fetcher: LocaleFetcher;
+}
+
 export class I18n {
+  public static async load(
+    lang: LocaleLang,
+    fetcher: LocaleFetcher
+  ): Promise<I18n> {
+    return new I18n(lang, { [lang]: await fetcher(lang) }, { fetcher });
+  }
+
   public readonly lang$: Val<LocaleLang>;
   public readonly t$: ReadonlyVal<TFunction>;
+  public fetcher?: LocaleFetcher;
 
   private readonly nestedLocales$_: Val<NestedLocales>;
   private readonly flatLocales_: FlatLocales;
   private readonly localeFns_: LocaleTemplateMessageFns;
 
-  public constructor(lang: LocaleLang, locales: NestedLocales) {
+  public constructor(
+    lang: LocaleLang,
+    locales: NestedLocales,
+    options?: I18nOptions
+  ) {
+    if (options) {
+      this.fetcher = options.fetcher;
+    }
+
     this.nestedLocales$_ = val(locales);
     this.flatLocales_ = new Map();
     this.localeFns_ = new Map();
@@ -26,7 +51,12 @@ export class I18n {
 
     const currentNestedLocale$ = combine(
       [this.lang$, this.nestedLocales$_],
-      ([lang, nestedLocales]) => nestedLocales[lang]
+      ([lang, nestedLocales]) => {
+        if (!nestedLocales[lang]) {
+          console.warn("Locale not found:", lang);
+        }
+        return nestedLocales[lang] || {};
+      }
     );
 
     this.t$ = derive(currentNestedLocale$, currentNestedLocale => {
@@ -47,11 +77,11 @@ export class I18n {
             insert(
               this.localeFns_,
               key,
-              createTemplateMessageFn(this.flatLocales_.get(key) || "")
+              createTemplateMessageFn(this.flatLocales_.get(key) || key)
             );
           return fn(args);
         }
-        return this.flatLocales_.get(key) || "";
+        return this.flatLocales_.get(key) || key;
       };
     });
   }
@@ -65,7 +95,13 @@ export class I18n {
   }
 
   /** Change language */
-  public setLang(lang: LocaleLang): void {
+  public async switchLang(lang: LocaleLang): Promise<void> {
+    if (!this.nestedLocales$_.value[lang] && this.fetcher) {
+      this.nestedLocales$_.set({
+        ...this.nestedLocales$_.value,
+        [lang]: await this.fetcher(lang),
+      });
+    }
     this.lang$.set(lang);
   }
 
@@ -79,13 +115,6 @@ export class I18n {
    */
   public hasKey(key: string): boolean {
     return this.flatLocales_.has(key);
-  }
-
-  /**
-   * @returns — boolean indicating whether a locale pack of the specified language exists or not.
-   */
-  public hasLocale(lang: LocaleLang): boolean {
-    return !!this.nestedLocales$_.value[lang];
   }
 
   public addLocales(locales: NestedLocales): void {
