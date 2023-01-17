@@ -86,6 +86,18 @@ describe("locale loader", () => {
     await i18n.switchLang("zh");
     expect(i18n.t("apple")).toBe("苹果");
   });
+
+  it("should support dynamic import", async () => {
+    const i18n = await I18n.load(
+      "en",
+      lang => import(`./locales/${lang}.json`)
+    );
+
+    expect(i18n.t("stock.fruit")).toBe("apple");
+
+    await i18n.switchLang("zh");
+    expect(i18n.t("stock.fruit")).toBe("苹果");
+  });
 });
 
 describe("template t function", () => {
