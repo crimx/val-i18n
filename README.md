@@ -1,4 +1,4 @@
-# [val-18n](https://github.com/crimx/val-i18n)
+# [val-i18n](https://github.com/crimx/val-i18n)
 
 <p align="center">
   <img width="200" src="https://raw.githubusercontent.com/crimx/val-i18n/main/assets/val-i18n.svg">
@@ -18,7 +18,7 @@ Reactive i18n with val-i18n.
 ## Install
 
 ```bash
-npm add val-18n value-enhancer
+npm add val-i18n value-enhancer
 ```
 
 ## Features
@@ -28,6 +28,7 @@ npm add val-18n value-enhancer
 - Nested locale messages.
 - Message formatting and pluralization.
 - Easy dynamic locale loading.
+- Framework integration friendly ([React, Svelte, etc.](#reactive-i18n)).
 
 ## Usage
 
@@ -36,7 +37,7 @@ With static locales:
 ```ts
 import { I18n, type Locales } from "val-i18n";
 
-const locales = {
+const locales: Locales = {
   en: {
     stock: {
       fruit: "apple",
@@ -51,7 +52,7 @@ i18n.t("stock.fruit"); // apple
 With dynamic locales:
 
 ```ts
-import { I18n, type Locales } from "val-i18n";
+import { I18n } from "val-i18n";
 
 const i18n = await I18n.load("en", lang => import(`./locales/${lang}.json`));
 ```
@@ -63,7 +64,7 @@ Message keys are surrounded by double curly brackets:
 ```ts
 import { I18n, type Locales } from "val-i18n";
 
-const locales = {
+const locales: Locales = {
   en: {
     stock: {
       fruit: "apple",
@@ -82,7 +83,7 @@ It also works with array:
 ```ts
 import { I18n, type Locales } from "val-i18n";
 
-const locales = {
+const locales: Locales = {
   en: {
     fav_fruit: "I love {{0}} and {{1}}",
   },
@@ -96,6 +97,8 @@ i18n.t("fav_fruit", ["apple", "banana"]); // I love apple and banana
 
 Message formatting supports a special key `:option` whose value will be appended to the key-path.
 
+For example:
+
 ```ts
 i18n.t("a.b.c", { ":option": "d" });
 ```
@@ -107,7 +110,7 @@ So for pluralization we can simply use `:option` as number count.
 ```ts
 import { I18n, type Locales } from "val-i18n";
 
-const locales = {
+const locales: Locales = {
   en: {
     apples: {
       0: "No apple",
@@ -128,3 +131,36 @@ i18n.t("apples", { ":option": 3 }); // 3 apples
 `i18n.i18n$` and `i18n.t$` are subscribable values.
 
 See [value-enhancer](https://github.com/crimx/value-enhancer#value-enhancer) for more details.
+
+#### Svelte
+
+In Svelte you can just pass `i18n.t$` as component props and use `$t` directly.
+
+```html
+<script>
+  export let t;
+</script>
+
+<div>
+  <h1>{$t("title")}</h1>
+</div>
+```
+
+```js
+new MySvelteComponent({
+  target: document.body,
+  props: {
+    t: i18n.t$,
+  },
+});
+```
+
+You can also set `i18n.t$` to a Svelte [context](https://svelte.dev/docs#run-time-svelte-setcontext).
+
+For more advance usages checkout [val-i18n-svelte](https://github.com/crimx/val-i18n-svelte).
+
+#### React
+
+It is recommended to also install [`val-i18n-react`](https://github.com/crimx/val-i18n-react) which includes some handy hooks.
+
+Or you can just use the hooks for `value-enhancer`: [`use-value-enhancer`](https://github.com/crimx/use-value-enhancer).
