@@ -1,6 +1,6 @@
 {
   "name": "val-i18n",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "Reactive i18n with value-enhancer.",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "release": "standard-version"
   },
   "peerDependencies": {
-    "value-enhancer": "@2"
+    "value-enhancer": "2"
   },
   "devDependencies": {
     "@jest/globals": "^28.1.3",
