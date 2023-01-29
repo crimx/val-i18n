@@ -57,6 +57,22 @@ import { I18n } from "val-i18n";
 const i18n = await I18n.load("en", lang => import(`./locales/${lang}.json`));
 ```
 
+### Detect Language
+
+You can detect language of browser/nodejs via `detectLang`. [BCP 47 tags and sub-tags](https://www.rfc-editor.org/rfc/rfc4647.html#section-3.4) are supported.
+
+```ts
+import { detectLang } from "val-i18n";
+
+detectLang(); // "en-US"
+
+const i18n = await I18n.load(
+  // language sub-tag is matched
+  detectLang(["en", "zh-CN"]) || "zh-TW", // "en"
+  lang => import(`./locales/${lang}.json`)
+);
+```
+
 ### Message Formatting
 
 Message keys are surrounded by double curly brackets:
