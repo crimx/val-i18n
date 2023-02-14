@@ -6,6 +6,15 @@
   "license": "MIT",
   "author": "CRIMX <straybugs@gmail.com> (https://github.com/crimx/)",
   "repository": "crimx/val-i18n",
+  "keywords": [
+    "internationalization",
+    "i18n",
+    "translation",
+    "localization",
+    "l10n",
+    "globalization",
+    "gettext"
+  ],
   "sideEffects": false,
   "main": "./dist/main.js",
   "module": "./dist/main.mjs",
