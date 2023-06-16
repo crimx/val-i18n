@@ -8,7 +8,7 @@ import type {
   TFunction,
 } from "./interface";
 import type { FlatLocale } from "./flat-locales";
-import type { LocaleTemplateMessageFns } from "./template-message";
+import type { LocaleTemplateMessageFns, TArgs } from "./template-message";
 
 import { val, combine } from "value-enhancer";
 import { flattenLocale } from "./flat-locales";
@@ -62,7 +62,7 @@ export class I18n {
     this.t$ = derive(this.flatLocale$_, flatLocale => {
       localeFns.clear();
 
-      return (key: string, args?: Record<string, string>): string => {
+      return (key: string, args?: TArgs): string => {
         if (args) {
           const option = args[":option"];
           if (option != null) {

@@ -1,5 +1,6 @@
 import type { ReadonlyVal } from "value-enhancer";
 import type { I18n } from "./i18n";
+import type { TArgs } from "./template-message";
 
 export type LocaleLang = string;
 
@@ -13,7 +14,7 @@ export type NestedLocales = Record<LocaleLang, NestedLocale>;
 
 export type Locales = NestedLocales;
 
-export type TFunctionArgs = Record<string | number, any> & {
+export type TFunctionArgs = TArgs & {
   [":option"]?: string | number;
 };
 

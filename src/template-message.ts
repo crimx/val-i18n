@@ -1,5 +1,5 @@
 /** Optional `args` object for t function */
-export type TArgs = Record<string, string>;
+export type TArgs = Record<string | number, any>;
 
 export type TemplateMessageFn = (args: TArgs) => string;
 
@@ -29,7 +29,7 @@ export const createTemplateMessageFn = (message: string): TemplateMessageFn => {
 
   return (args: TArgs): string => {
     for (let i = keys.length - 1; i >= 0; i--) {
-      slices[i * 2 + 1] = args[keys[i]] || keys[i];
+      slices[i * 2 + 1] = args[keys[i]] ?? keys[i];
     }
     return slices.join("");
   };

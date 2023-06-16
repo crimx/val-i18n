@@ -16,4 +16,11 @@ describe("template message", () => {
       "Yesterday name found an apple and ate it"
     );
   });
+
+  it("should support number as value", () => {
+    const fn = createTemplateMessageFn(
+      "Zero: {{zero}} One: {{one}} Two: {{two}}"
+    );
+    expect(fn({ zero: 0, one: 1, two: 2 })).toBe("Zero: 0 One: 1 Two: 2");
+  });
 });
