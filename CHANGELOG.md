@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/crimx/val-i18n/compare/v0.1.3...v0.1.4) (2023-06-16)
+
+
+### Bug Fixes
+
+* **template:** support number as options value ([6d62a92](https://github.com/crimx/val-i18n/commit/6d62a922de78bd69f8983c03c696166f0e51928a)), closes [#2](https://github.com/crimx/val-i18n/issues/2)
+
 ### 0.1.3 (2023-01-29)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "val-i18n",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": false,
   "description": "Reactive i18n with value-enhancer.",
   "license": "MIT",
