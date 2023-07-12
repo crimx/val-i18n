@@ -3,12 +3,13 @@ import { derive } from "value-enhancer";
 import type {
   LocaleFetcher,
   LocaleLang,
-  NestedLocale,
-  NestedLocales,
+  Locale,
+  Locales,
   TFunction,
+  TFunctionArgs,
 } from "./interface";
 import type { FlatLocale } from "./flat-locales";
-import type { LocaleTemplateMessageFns, TArgs } from "./template-message";
+import type { LocaleTemplateMessageFns } from "./template-message";
 
 import { val, combine } from "value-enhancer";
 import { flattenLocale } from "./flat-locales";
@@ -53,10 +54,10 @@ export class I18n {
   public fetcher?: LocaleFetcher;
 
   /** A Val of loaded locales. */
-  public readonly locales$: Val<NestedLocales>;
+  public readonly locales$: Val<Locales>;
 
   /** Loaded locales. */
-  public get locales(): NestedLocales {
+  public get locales(): Locales {
     return this.locales$.value;
   }
 
@@ -64,7 +65,7 @@ export class I18n {
 
   public constructor(
     initialLang: LocaleLang,
-    locales: NestedLocales,
+    locales: Locales,
     options?: I18nOptions
   ) {
     if (options) {
@@ -90,7 +91,7 @@ export class I18n {
     this.t$ = derive(this.flatLocale$_, flatLocale => {
       localeFns.clear();
 
-      return (key: string, args?: TArgs): string => {
+      return (key: string, args?: TFunctionArgs): string => {
         if (args) {
           const option = args[":option"];
           if (option != null) {
@@ -135,7 +136,7 @@ export class I18n {
    *
    * Use `i18n.locales$.set()` for more control.
    */
-  public addLocale(lang: LocaleLang, locale: NestedLocale): void {
+  public addLocale(lang: LocaleLang, locale: Locale): void {
     this.locales$.set({ ...this.locales, [lang]: locale });
   }
 }

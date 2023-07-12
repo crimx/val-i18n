@@ -1,7 +1,6 @@
-/** Optional `args` object for t function */
-export type TArgs = Record<string | number, any>;
+import type { TFunctionArgs } from "./interface";
 
-export type TemplateMessageFn = (args: TArgs) => string;
+export type TemplateMessageFn = (args: TFunctionArgs) => string;
 
 export type LocaleTemplateMessageFns = Map<string, TemplateMessageFn>;
 
@@ -27,7 +26,7 @@ export const createTemplateMessageFn = (message: string): TemplateMessageFn => {
     return () => message;
   }
 
-  return (args: TArgs): string => {
+  return (args: TFunctionArgs): string => {
     for (let i = keys.length - 1; i >= 0; i--) {
       slices[i * 2 + 1] = args[keys[i]] ?? keys[i];
     }
