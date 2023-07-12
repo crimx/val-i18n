@@ -21,10 +21,14 @@ export interface I18nOptions {
 
 export class I18n {
   public static async load(
-    lang: LocaleLang,
+    initialLang: LocaleLang,
     fetcher: LocaleFetcher
   ): Promise<I18n> {
-    return new I18n(lang, { [lang]: await fetcher(lang) }, { fetcher });
+    return new I18n(
+      initialLang,
+      { [initialLang]: await fetcher(initialLang) },
+      { fetcher }
+    );
   }
 
   public readonly lang$: Val<LocaleLang>;
@@ -35,7 +39,7 @@ export class I18n {
   private readonly flatLocale$_: ReadonlyVal<FlatLocale>;
 
   public constructor(
-    lang: LocaleLang,
+    initialLang: LocaleLang,
     locales: NestedLocales,
     options?: I18nOptions
   ) {
@@ -47,7 +51,7 @@ export class I18n {
 
     const localeFns: LocaleTemplateMessageFns = new Map();
 
-    this.lang$ = val(lang);
+    this.lang$ = val(initialLang);
 
     this.flatLocale$_ = combine(
       [this.lang$, this.nestedLocales$_],
