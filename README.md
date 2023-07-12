@@ -23,16 +23,17 @@ npm add val-i18n value-enhancer
 
 ## Features
 
-- Subscribable reactive `i18n$` and `t$`.
+- Subscribable reactive `i18n$`, `t$` and `locales$`.
 - Lightweight and fast `t()` translation.
 - Nested locale messages.
 - Message formatting and pluralization.
 - Easy dynamic locale loading.
+- Locale namespaces.
 - Framework integration friendly ([React, Svelte, etc.](#reactive-i18n)).
 
 ## Usage
 
-With static locales:
+Create an I18n instance with static locales:
 
 ```ts
 import { I18n, type Locales } from "val-i18n";
@@ -47,14 +48,25 @@ const locales: Locales = {
 
 const i18n = new I18n("en", locales);
 i18n.t("stock.fruit"); // apple
+
+// add more locales later
+const zhCN = await import(`./locales/zh-CN.json`);
+i18n.addLocale("zh-CN", zhCN);
+
+// or replace all locales manually
+const zhTW = await import(`./locales/zh-TW.json`);
+i18n.locales$.set({ "zh-TW": zhTW });
 ```
 
-With dynamic locales:
+You can also create an I18n instance with preloaded dynamic locales:
 
 ```ts
 import { I18n } from "val-i18n";
 
-const i18n = await I18n.load("en", lang => import(`./locales/${lang}.json`));
+const i18n = await I18n.preload("en", lang => import(`./locales/${lang}.json`));
+// Locale `./locales/en.json` is preloaded
+
+await i18n.switchLang("zh-CN"); // Locale `./locales/zh-CN.json` is loaded
 ```
 
 ### Detect Language
@@ -66,7 +78,7 @@ import { detectLang } from "val-i18n";
 
 detectLang(); // "en-US"
 
-const i18n = await I18n.load(
+const i18n = await I18n.preload(
   // language sub-tag is matched
   detectLang(["en", "zh-CN"]) || "zh-TW", // "en"
   lang => import(`./locales/${lang}.json`)
@@ -144,9 +156,37 @@ i18n.t("apples", { ":option": 3 }); // 3 apples
 
 ### Reactive I18n
 
-`i18n.i18n$` and `i18n.t$` are subscribable values.
+`i18n.i18n$`, `i18n.t$` and `i18n.locales$` are subscribable values.
 
 See [value-enhancer](https://github.com/crimx/value-enhancer#value-enhancer) for more details.
+
+### Namespace
+
+I18n instance is cheap to create. You can create multiple instances for different namespaces.
+
+```ts
+import { I18n } from "val-i18n";
+
+// Module Login
+async function moduleLogin() {
+  const i18n = await I18n.preload(
+    "en",
+    lang => import(`./locales/login/${lang}.json`)
+  );
+
+  console.log(i18n.t("password"));
+}
+
+// Module About
+async function moduleAbout() {
+  const i18n = await I18n.preload(
+    "en",
+    lang => import(`./locales/about/${lang}.json`)
+  );
+
+  console.log(i18n.t("author"));
+}
+```
 
 #### Svelte
 
