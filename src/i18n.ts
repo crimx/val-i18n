@@ -16,11 +16,13 @@ import { createTemplateMessageFn } from "./template-message";
 import { insert } from "./utils";
 
 export interface I18nOptions {
+  /** Fetch locale of the specified lang. */
   fetcher: LocaleFetcher;
 }
 
 export class I18n {
-  public static async load(
+  /** Fetch locale of initialLang and return an I18n instance with the locale. */
+  public static async preload(
     initialLang: LocaleLang,
     fetcher: LocaleFetcher
   ): Promise<I18n> {
@@ -31,11 +33,33 @@ export class I18n {
     );
   }
 
+  /** A Val of current lang. */
   public readonly lang$: Val<LocaleLang>;
+
+  /** Current lang. */
+  public get lang(): LocaleLang {
+    return this.lang$.value;
+  }
+
+  /** A Val of current translate function. */
   public readonly t$: ReadonlyVal<TFunction>;
+
+  /** Current translate function. */
+  public get t(): TFunction {
+    return this.t$.value;
+  }
+
+  /** Fetch locale of the specified lang. */
   public fetcher?: LocaleFetcher;
 
-  private readonly nestedLocales$_: Val<NestedLocales>;
+  /** A Val of loaded locales. */
+  public readonly locales$: Val<NestedLocales>;
+
+  /** Loaded locales. */
+  public get locales(): NestedLocales {
+    return this.locales$.value;
+  }
+
   private readonly flatLocale$_: ReadonlyVal<FlatLocale>;
 
   public constructor(
@@ -47,14 +71,14 @@ export class I18n {
       this.fetcher = options.fetcher;
     }
 
-    this.nestedLocales$_ = val(locales);
+    this.locales$ = val(locales);
 
     const localeFns: LocaleTemplateMessageFns = new Map();
 
     this.lang$ = val(initialLang);
 
     this.flatLocale$_ = combine(
-      [this.lang$, this.nestedLocales$_],
+      [this.lang$, this.locales$],
       ([lang, nestedLocales]) => {
         if (!nestedLocales[lang]) {
           console.warn("Locale not found:", lang);
@@ -87,17 +111,13 @@ export class I18n {
     });
   }
 
-  public get t(): TFunction {
-    return this.t$.value;
-  }
-
-  public get lang(): LocaleLang {
-    return this.lang$.value;
-  }
-
-  /** Change language */
+  /**
+   * Change language.
+   *
+   * @returns — a promise that resolves when the new locale is fetched.
+   */
   public async switchLang(lang: LocaleLang): Promise<void> {
-    if (!this.nestedLocales$_.value[lang] && this.fetcher) {
+    if (!this.locales$.value[lang] && this.fetcher) {
       this.addLocale(lang, await this.fetcher(lang));
     }
     this.lang$.set(lang);
@@ -110,10 +130,12 @@ export class I18n {
     return !!this.flatLocale$_.value[key];
   }
 
+  /**
+   * Add a locale to the locales.
+   *
+   * Use `i18n.locales$.set()` for more control.
+   */
   public addLocale(lang: LocaleLang, locale: NestedLocale): void {
-    this.nestedLocales$_.set({
-      ...this.nestedLocales$_.value,
-      [lang]: locale,
-    });
+    this.locales$.set({ ...this.locales, [lang]: locale });
   }
 }

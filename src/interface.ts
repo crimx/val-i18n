@@ -6,16 +6,16 @@ export type LocaleLang = string;
 
 export type LocaleLangObservable = ReadonlyVal<LocaleLang>;
 
-export type NestedLocale = { [key: string]: string | NestedLocale };
+export type NestedLocale = { readonly [key: string]: string | NestedLocale };
 
 export type Locale = NestedLocale;
 
-export type NestedLocales = Record<LocaleLang, NestedLocale>;
+export type NestedLocales = { readonly [lang: LocaleLang]: NestedLocale };
 
 export type Locales = NestedLocales;
 
 export type TFunctionArgs = TArgs & {
-  [":option"]?: string | number;
+  readonly [":option"]?: string | number;
 };
 
 /**

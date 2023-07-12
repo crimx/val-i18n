@@ -79,7 +79,7 @@ describe("locale loader", () => {
       return locales[lang];
     };
 
-    const i18n = await I18n.load("en", fakeLocaleFetcher);
+    const i18n = await I18n.preload("en", fakeLocaleFetcher);
 
     expect(i18n.t("apple")).toBe("apple");
 
@@ -88,7 +88,7 @@ describe("locale loader", () => {
   });
 
   it("should support dynamic import", async () => {
-    const i18n = await I18n.load(
+    const i18n = await I18n.preload(
       "en",
       lang => import(`./locales/${lang}.json`)
     );
