@@ -38,10 +38,21 @@ describe("i18n", () => {
       en: { apple: "apple" },
     };
     const i18n = new I18n("en", locales);
+
+    expect(i18n.locale).toBe(locales.en);
+    expect(i18n.lang).toBe("en");
     expect(i18n.t("apple")).toBe("apple");
 
-    i18n.addLocale("zh", { apple: "苹果" });
+    const zh = { apple: "苹果" };
+    i18n.addLocale("zh", zh);
+
+    expect(i18n.lang).toBe("en");
+    expect(i18n.locale).toBe(locales.en);
+
     i18n.switchLang("zh");
+
+    expect(i18n.lang).toBe("zh");
+    expect(i18n.locale).toBe(zh);
     expect(i18n.t("apple")).toBe("苹果");
   });
 
