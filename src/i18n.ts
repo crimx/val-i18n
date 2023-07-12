@@ -22,7 +22,7 @@ export interface I18nOptions {
 }
 
 export class I18n {
-  /** Fetch locale of initialLang and return an I18n instance with the locale. */
+  /** Fetch locale of `initialLang` and return an I18n instance with the locale. */
   public static async preload(
     initialLang: LocaleLang,
     fetcher: LocaleFetcher
