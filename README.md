@@ -23,7 +23,7 @@ npm add val-i18n value-enhancer
 
 ## Features
 
-- Subscribable reactive `i18n$`, `t$` and `locales$`.
+- Subscribable reactive `lang$`, `t$` and `locales$`.
 - Lightweight and fast `t()` translation.
 - Nested locale messages.
 - Message formatting and pluralization.
@@ -156,9 +156,21 @@ i18n.t("apples", { ":option": 3 }); // 3 apples
 
 ### Reactive I18n
 
-`i18n.i18n$`, `i18n.t$` and `i18n.locales$` are subscribable values.
+`i18n.lang$`, `i18n.t$` and `i18n.locales$` are subscribable values.
 
 See [value-enhancer](https://github.com/crimx/value-enhancer#value-enhancer) for more details.
+
+```js
+i18n.lang$.reaction(lang => {
+  // logs lang on changed
+  console.log(lang);
+});
+
+i18n.lang$.subscribe(lang => {
+  // logs lang immediately and on changed
+  console.log(lang);
+});
+```
 
 ### Namespace
 

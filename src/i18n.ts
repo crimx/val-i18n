@@ -35,7 +35,7 @@ export class I18n {
   }
 
   /** A Val of current lang. */
-  public readonly lang$: Val<LocaleLang>;
+  public readonly lang$: ReadonlyVal<LocaleLang>;
 
   /** Current lang. */
   public get lang(): LocaleLang {
@@ -53,12 +53,20 @@ export class I18n {
   /** Fetch locale of the specified lang. */
   public fetcher?: LocaleFetcher;
 
-  /** A Val of loaded locales. */
+  /** A Val of all loaded locales. */
   public readonly locales$: Val<Locales>;
 
-  /** Loaded locales. */
+  /** All loaded locales. */
   public get locales(): Locales {
     return this.locales$.value;
+  }
+
+  /** A Val of current locale. */
+  public readonly locale$: ReadonlyVal<Locale>;
+
+  /** Current locale */
+  public get locale(): Locale {
+    return this.locale$.value;
   }
 
   private readonly flatLocale$_: ReadonlyVal<FlatLocale>;
@@ -78,15 +86,17 @@ export class I18n {
 
     this.lang$ = val(initialLang);
 
-    this.flatLocale$_ = combine(
+    this.locale$ = combine(
       [this.lang$, this.locales$],
       ([lang, nestedLocales]) => {
         if (!nestedLocales[lang]) {
           console.warn("Locale not found:", lang);
         }
-        return flattenLocale(nestedLocales[lang] || {});
+        return nestedLocales[lang] || {};
       }
     );
+
+    this.flatLocale$_ = derive(this.locale$, flattenLocale);
 
     this.t$ = derive(this.flatLocale$_, flatLocale => {
       localeFns.clear();
@@ -121,7 +131,7 @@ export class I18n {
     if (!this.locales$.value[lang] && this.fetcher) {
       this.addLocale(lang, await this.fetcher(lang));
     }
-    this.lang$.set(lang);
+    (this.lang$ as Val<LocaleLang>).set(lang);
   }
 
   /**
