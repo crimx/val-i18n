@@ -200,7 +200,30 @@ async function moduleAbout() {
 }
 ```
 
-#### Svelte
+## Hot Module Replacement
+
+To use [Vite HMR](https://vitejs.dev/guide/api-hmr.html) for locales:
+
+```ts
+const i18n = await I18n.preload("en", lang => import(`./locales/${lang}.json`));
+
+if (import.meta.hot) {
+  import.meta.hot.accept(
+    ["./locales/en.json", "./locales/zh-CN.json"],
+    ([en, zhCN]) => {
+      i18n.locales$.set({
+        ...i18n.locales,
+        en: en?.default || i18n.locales.en,
+        "zh-CN": zhCN?.default || i18n.locales["zh-CN"],
+      });
+    }
+  );
+}
+```
+
+## Framework Integration
+
+### Svelte
 
 In Svelte you can just pass `i18n.t$` as component props and use `$t` directly.
 
@@ -227,7 +250,7 @@ You can also set `i18n.t$` to a Svelte [context](https://svelte.dev/docs#run-tim
 
 For more advance usages checkout [val-i18n-svelte](https://github.com/crimx/val-i18n-svelte).
 
-#### React
+### React
 
 It is recommended to also install [`val-i18n-react`](https://github.com/crimx/val-i18n-react) which includes some handy hooks.
 
