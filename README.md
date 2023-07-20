@@ -221,6 +221,41 @@ if (import.meta.hot) {
 }
 ```
 
+## Dynamic Import
+
+Although you can simply use `import()` to dynamically load locales, with bundler API you can do more.
+
+For example with Vite you can use [glob import](https://vitejs.dev/guide/features.html#glob-import) to statically get info of all locales.
+This way allows you to add or remove locales without changing source code.
+
+```ts
+import { I18n, detectLang, type Locale, type LocaleLang } from "val-i18n";
+
+export const i18nLoader = (): Promise<I18n> => {
+  const localeModules = import.meta.glob<boolean, string, Locale>(
+    "./locales/*.json",
+    { import: "default" }
+  );
+
+  const localeLoaders = Object.keys(localeModules).reduce((loaders, path) => {
+    if (localeModules[path]) {
+      const langMatch = path.match(/\/([^/]+)\.json$/);
+      if (langMatch) {
+        loaders[langMatch[1]] = localeModules[path];
+      }
+    }
+    return loaders;
+  }, {} as Record<LocaleLang, () => Promise<Locale>>);
+
+  const langs = Object.keys(localeLoaders);
+
+  return I18n.preload(
+    detectLang(langs) || (localeLoaders.en ? "en" : langs[0]),
+    lang => localeLoaders[lang]()
+  );
+};
+```
+
 ## Framework Integration
 
 ### Svelte
