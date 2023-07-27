@@ -54,8 +54,8 @@ devDependencies:
     specifier: ^4.4.3
     version: 4.6.3
   value-enhancer:
-    specifier: ^2.0.6
-    version: 2.0.6
+    specifier: ^3.0.2
+    version: 3.0.2
   yoctocolors:
     specifier: ^1.0.0
     version: 1.0.0
@@ -4535,8 +4535,8 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /value-enhancer@2.0.6:
-    resolution: {integrity: sha512-szqrIb1p41w8JcYNsOhb/V21fCc/aSGrV7ejDbfYqTxVZy0F3K9GFSsJ7dzUqcXos8oTeSsZ0cuAL7q2sSiQRg==}
+  /value-enhancer@3.0.2:
+    resolution: {integrity: sha512-5CgRai8X8Jl81NGDm0VrCvn4dzg9noltvPyTAZoZQRfLTNW/mv/giqxXCvI91RLuQ6N4Y20IsakMs/6KUTBSEw==}
     dev: true
 
   /vscode-oniguruma@1.6.2:
