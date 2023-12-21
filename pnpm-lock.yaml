@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -54,8 +54,8 @@ devDependencies:
     specifier: ^4.4.3
     version: 4.6.3
   value-enhancer:
-    specifier: ^3.0.2
-    version: 3.0.2
+    specifier: ^4.0.0
+    version: 4.0.0
   yoctocolors:
     specifier: ^1.0.0
     version: 1.0.0
@@ -4535,8 +4535,8 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /value-enhancer@3.0.2:
-    resolution: {integrity: sha512-5CgRai8X8Jl81NGDm0VrCvn4dzg9noltvPyTAZoZQRfLTNW/mv/giqxXCvI91RLuQ6N4Y20IsakMs/6KUTBSEw==}
+  /value-enhancer@4.0.0:
+    resolution: {integrity: sha512-li17sukPM75Ian+QsQt5UJXPNgP1ZWTSkl8FI9NXrKldic7x+ctbQ0fZgG7q38fPjsKGYghKWVsL8I29NHu4Qg==}
     dev: true
 
   /vscode-oniguruma@1.6.2:
