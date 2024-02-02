@@ -15,8 +15,8 @@ export function detectLang(): string;
  * detectLang(["en", "zh-CN"]) || "zh-TW"
  * ```
  */
-export function detectLang(langs: string[]): string | null;
-export function detectLang(langs?: string[]): string | null {
+export function detectLang(langs: readonly string[]): string | null;
+export function detectLang(langs?: readonly string[]): string | null {
   const locale = Intl.DateTimeFormat().resolvedOptions().locale;
 
   if (langs) {
