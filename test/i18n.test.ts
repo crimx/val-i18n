@@ -8,6 +8,7 @@ describe("i18n", () => {
     const i18n = new I18n("en", locales);
     expect(i18n.lang).toBe("en");
     expect(i18n.t("name")).toBe("CRIMX");
+    i18n.dispose();
   });
 
   it("should support nested locale message", () => {

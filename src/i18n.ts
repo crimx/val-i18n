@@ -69,7 +69,7 @@ export class I18n {
     return this.locale$.value;
   }
 
-  private readonly flatLocale$_: ReadonlyVal<FlatLocale>;
+  readonly #flatLocale$: ReadonlyVal<FlatLocale>;
 
   public constructor(
     initialLang: LocaleLang,
@@ -96,9 +96,9 @@ export class I18n {
       }
     );
 
-    this.flatLocale$_ = derive(this.locale$, flattenLocale);
+    this.#flatLocale$ = derive(this.locale$, flattenLocale);
 
-    this.t$ = derive(this.flatLocale$_, flatLocale => {
+    this.t$ = derive(this.#flatLocale$, flatLocale => {
       localeFns.clear();
 
       return (key: string, args?: TFunctionArgs): string => {
@@ -138,7 +138,7 @@ export class I18n {
    * @returns — boolean indicating whether a message with the specified key in current language exists or not.
    */
   public hasKey(key: string): boolean {
-    return !!this.flatLocale$_.value[key];
+    return !!this.#flatLocale$.value[key];
   }
 
   /**
@@ -148,5 +148,13 @@ export class I18n {
    */
   public addLocale(lang: LocaleLang, locale: Locale): void {
     this.locales$.set({ ...this.locales, [lang]: locale });
+  }
+
+  public dispose(): void {
+    this.lang$.dispose();
+    this.t$.dispose();
+    this.locales$.dispose();
+    this.locale$.dispose();
+    this.#flatLocale$.dispose();
   }
 }
