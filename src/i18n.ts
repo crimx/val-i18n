@@ -14,7 +14,6 @@ import type { LocaleTemplateMessageFns } from "./template-message";
 import { val, combine } from "value-enhancer";
 import { flattenLocale } from "./flat-locales";
 import { createTemplateMessageFn } from "./template-message";
-import { insert } from "./utils";
 
 export interface I18nOptions {
   /** Fetch locale of the specified lang. */
@@ -76,24 +75,17 @@ export class I18n {
     locales: Locales,
     options?: I18nOptions
   ) {
-    if (options) {
-      this.fetcher = options.fetcher;
-    }
-
-    this.locales$ = val(locales);
+    this.fetcher = options?.fetcher;
 
     const localeFns: LocaleTemplateMessageFns = new Map();
+
+    this.locales$ = val(locales);
 
     this.lang$ = val(initialLang);
 
     this.locale$ = combine(
       [this.lang$, this.locales$],
-      ([lang, nestedLocales]) => {
-        if (!nestedLocales[lang]) {
-          console.warn("Locale not found:", lang);
-        }
-        return nestedLocales[lang] || {};
-      }
+      ([lang, nestedLocales]) => nestedLocales[lang] || {}
     );
 
     this.#flatLocale$ = derive(this.locale$, flattenLocale);
@@ -108,12 +100,11 @@ export class I18n {
             const newKey = `${key}.${option}`;
             key = flatLocale[newKey] ? newKey : `${key}.other`;
           }
-          const fn =
-            localeFns.get(key) ||
-            insert(
-              localeFns,
+          let fn = localeFns.get(key);
+          fn ||
+            localeFns.set(
               key,
-              createTemplateMessageFn(flatLocale[key] || key)
+              (fn = createTemplateMessageFn(flatLocale[key] || key))
             );
           return fn(args);
         }

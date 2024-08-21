@@ -1,4 +1,4 @@
-import { describe, it, expect, jest } from "@jest/globals";
+import { describe, it, expect } from "vitest";
 import type { LocaleFetcher, Locales } from "../src/main";
 import { I18n } from "../src/main";
 
@@ -55,18 +55,6 @@ describe("i18n", () => {
     expect(i18n.lang).toBe("zh");
     expect(i18n.locale).toBe(zh);
     expect(i18n.t("apple")).toBe("苹果");
-  });
-
-  it("should warn if locale not found", () => {
-    const warn = jest.spyOn(console, "warn").mockImplementation(() => void 0);
-    expect(warn).toBeCalledTimes(0);
-
-    const i18n = new I18n("en", {});
-    expect(i18n.t("name")).toBe("name");
-
-    expect(warn).toBeCalledTimes(1);
-
-    warn.mockReset();
   });
 
   it("should check if message key-path exists", () => {
