@@ -23,5 +23,5 @@ export type TFunction = (keyPath: string, args?: TFunctionArgs) => string;
 export type TFunctionObservable = ReadonlyVal<TFunction>;
 
 export interface LocaleFetcher {
-  (lang: LocaleLang): Promise<Locale>;
+  (lang: LocaleLang): Promise<Locale> | Locale;
 }
