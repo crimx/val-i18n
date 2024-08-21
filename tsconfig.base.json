@@ -8,6 +8,7 @@
     "noUnusedParameters": true,
     "noImplicitOverride": true,
     "module": "ESNext",
+    "useDefineForClassFields": false,
     "lib": ["DOM", "ESNext"],
     "moduleResolution": "Node",
     "esModuleInterop": true,
