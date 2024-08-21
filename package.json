@@ -27,6 +27,7 @@
     "prepublishOnly": "pnpm run build",
     "lint": "eslint --ext .ts,.tsx . && prettier --check .",
     "test": "jest --coverage",
+    "test:coverage": "jest --coverage",
     "docs": "typedoc --options typedoc.json",
     "build": "cross-env NODE_ENV=production tsup-node src/main.ts",
     "build:min": "cross-env NODE_ENV=production MINIFY=true tsup-node src/main.ts && node scripts/gzip.mjs",
@@ -55,5 +56,6 @@
     "typescript": "^4.4.3",
     "value-enhancer": "^5.0.0",
     "yoctocolors": "^1.0.0"
-  }
+  },
+  "packageManager": "pnpm@9.7.0"
 }
