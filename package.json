@@ -26,8 +26,8 @@
   "scripts": {
     "prepublishOnly": "pnpm run build",
     "lint": "eslint --ext .ts,.tsx . && prettier --check .",
-    "test": "vitest",
-    "test:coverage": "tsc --noEmit && vitest run --coverage --coverage.include=src/**",
+    "test": "vitest --coverage",
+    "test:ci": "tsc --noEmit && vitest --coverage --coverage.reporter=lcov --coverage.include=src/**",
     "docs": "typedoc --options typedoc.json",
     "build": "cross-env NODE_ENV=production tsup-node src/main.ts",
     "build:min": "cross-env NODE_ENV=production MINIFY=true tsup-node src/main.ts && node scripts/gzip.mjs",
