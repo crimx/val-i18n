@@ -19,6 +19,8 @@
   "main": "./dist/main.js",
   "module": "./dist/main.mjs",
   "types": "./dist/main.d.ts",
+  "unpkg": "./dist/main.umd.js",
+  "jsdelivr": "./dist/main.umd.js",
   "files": [
     "src",
     "dist"
@@ -29,9 +31,8 @@
     "test": "vitest --coverage",
     "test:ci": "tsc --noEmit && vitest --coverage --coverage.reporter=lcov --coverage.include=src/**",
     "docs": "typedoc --options typedoc.json",
-    "build": "cross-env NODE_ENV=production tsup-node src/main.ts",
-    "build:min": "cross-env NODE_ENV=production MINIFY=true tsup-node src/main.ts && node scripts/gzip.mjs",
-    "build:dev": "cross-env NODE_ENV=development tsup-node src/main.ts",
+    "build": "cross-env NODE_ENV=production tsup --onSuccess \"node scripts/build-umd.mjs\"",
+    "build:min": "cross-env NODE_ENV=production MINIFY=true tsup && node scripts/gzip.mjs",
     "release": "standard-version"
   },
   "peerDependencies": {
@@ -48,6 +49,7 @@
     "gzip-size": "^7.0.0",
     "prettier": "^2.4.0",
     "pretty-bytes": "^6.0.0",
+    "rollup": "^3.22.0",
     "standard-version": "^9.3.1",
     "tsup": "^8.2.4",
     "typedoc": "^0.26.6",

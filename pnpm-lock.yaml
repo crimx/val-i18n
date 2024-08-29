@@ -38,6 +38,9 @@ importers:
       pretty-bytes:
         specifier: ^6.0.0
         version: 6.0.0
+      rollup:
+        specifier: ^3.22.0
+        version: 3.29.4
       standard-version:
         specifier: ^9.3.1
         version: 9.3.2
@@ -1111,11 +1114,6 @@ packages:
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
-  fsevents@2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
-
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -1808,6 +1806,11 @@ packages:
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    hasBin: true
+
+  rollup@3.29.4:
+    resolution: {integrity: sha512-oWzmBZwvYrU0iJHtDmhsm662rC15FRXmcjCk1xD771dFDx5jJ02ufAQQTn0etB2emNk4J9EZg/yWKpsn9BWGRw==}
+    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
 
   rollup@4.21.0:
@@ -2835,7 +2838,7 @@ snapshots:
       normalize-path: 3.0.0
       readdirp: 3.6.0
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
 
   cliui@7.0.4:
     dependencies:
@@ -3281,9 +3284,6 @@ snapshots:
       null-check: 1.0.0
 
   fs.realpath@1.0.0: {}
-
-  fsevents@2.3.2:
-    optional: true
 
   fsevents@2.3.3:
     optional: true
@@ -3927,6 +3927,10 @@ snapshots:
     dependencies:
       glob: 7.2.0
 
+  rollup@3.29.4:
+    optionalDependencies:
+      fsevents: 2.3.3
+
   rollup@4.21.0:
     dependencies:
       '@types/estree': 1.0.5
@@ -3947,7 +3951,7 @@ snapshots:
       '@rollup/rollup-win32-arm64-msvc': 4.21.0
       '@rollup/rollup-win32-ia32-msvc': 4.21.0
       '@rollup/rollup-win32-x64-msvc': 4.21.0
-      fsevents: 2.3.2
+      fsevents: 2.3.3
 
   run-parallel@1.2.0:
     dependencies:
