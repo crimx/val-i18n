@@ -152,6 +152,17 @@ describe("template t function", () => {
     expect(i18n.t("apple", { ":option": 3 })).toBe("3 apples");
   });
 
+  it("should support :option without sub keys", () => {
+    const locales: Locales = {
+      en: {
+        message: "{{:option}} world",
+      },
+    };
+    const i18n = new I18n("en", locales);
+    expect(i18n.t("message", { ":option": "hello" })).toBe("hello world");
+    expect(i18n.t("message", { ":option": "bye" })).toBe("bye world");
+  });
+
   it("should return key if message not exists", () => {
     const i18n = new I18n("en", {});
     expect(i18n.t("fruit")).toBe("fruit");

@@ -97,8 +97,12 @@ export class I18n {
         if (args) {
           const option = args[":option"];
           if (option != null) {
-            const newKey = `${key}.${option}`;
-            key = flatLocale[newKey] ? newKey : `${key}.other`;
+            let newKey: string;
+            key =
+              flatLocale[(newKey = `${key}.${option}`)] ||
+              flatLocale[(newKey = `${key}.other`)]
+                ? newKey
+                : key;
           }
           let fn = localeFns.get(key);
           fn ||
