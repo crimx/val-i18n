@@ -44,10 +44,9 @@ export class I18n {
   /** A Val of current translate function. */
   public readonly t$: ReadonlyVal<TFunction>;
 
-  /** Current translate function. */
-  public get t(): TFunction {
-    return this.t$.value;
-  }
+  /** Translation function that uses the current `t$` function. */
+  public readonly t: TFunction = (keyPath, args) =>
+    this.t$.get()(keyPath, args);
 
   /** Fetch locale of the specified lang. */
   public fetcher?: LocaleFetcher;
@@ -68,7 +67,8 @@ export class I18n {
     return this.locale$.value;
   }
 
-  readonly #flatLocale$: ReadonlyVal<FlatLocale>;
+  /** @internal */
+  private readonly _flatLocale$_: ReadonlyVal<FlatLocale>;
 
   public constructor(
     initialLang: LocaleLang,
@@ -88,33 +88,45 @@ export class I18n {
       ([lang, nestedLocales]) => nestedLocales[lang] || {}
     );
 
-    this.#flatLocale$ = derive(this.locale$, flattenLocale);
+    this._flatLocale$_ = derive(this.locale$, flattenLocale);
 
-    this.t$ = derive(this.#flatLocale$, flatLocale => {
-      localeFns.clear();
-
-      return (key: string, args?: TFunctionArgs): string => {
+    this.t$ = derive(this._flatLocale$_, flatLocale =>
+      ((flatLocale: FlatLocale, key: string, args?: TFunctionArgs): string => {
         if (args) {
-          const option = args[":option"];
-          if (option != null) {
-            let newKey: string;
-            key =
-              flatLocale[(newKey = `${key}.${option}`)] ||
-              flatLocale[(newKey = `${key}.other`)]
-                ? newKey
-                : key;
+          const modifier = args["@"];
+          if (modifier != null) {
+            const modifierKey = `${key}@${modifier}`;
+            if (flatLocale[modifierKey]) {
+              key = modifierKey;
+            }
+          } else {
+            // legacy support for :option
+            const option = args[":option"];
+            if (option != null) {
+              let newKey: string;
+              key =
+                flatLocale[(newKey = `${key}.${option}`)] ||
+                flatLocale[(newKey = `${key}.other`)]
+                  ? newKey
+                  : key;
+            }
           }
-          let fn = localeFns.get(key);
-          fn ||
-            localeFns.set(
-              key,
-              (fn = createTemplateMessageFn(flatLocale[key] || key))
-            );
-          return fn(args);
+
+          if (flatLocale[key]) {
+            let fn = localeFns.get(key);
+            fn ??
+              localeFns.set(
+                key,
+                (fn = createTemplateMessageFn(flatLocale[key]))
+              );
+            if (fn) {
+              return fn(args);
+            }
+          }
         }
         return flatLocale[key] || key;
-      };
-    });
+      }).bind(localeFns.clear(), flatLocale)
+    );
   }
 
   /**
@@ -133,7 +145,7 @@ export class I18n {
    * @returns — boolean indicating whether a message with the specified key in current language exists or not.
    */
   public hasKey(key: string): boolean {
-    return !!this.#flatLocale$.value[key];
+    return !!this._flatLocale$_.value[key];
   }
 
   /**
@@ -150,6 +162,6 @@ export class I18n {
     this.t$.dispose();
     this.locales$.dispose();
     this.locale$.dispose();
-    this.#flatLocale$.dispose();
+    this._flatLocale$_.dispose();
   }
 }

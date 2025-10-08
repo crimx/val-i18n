@@ -2,14 +2,16 @@ import type { TFunctionArgs } from "./interface";
 
 export type TemplateMessageFn = (args: TFunctionArgs) => string;
 
-export type LocaleTemplateMessageFns = Map<string, TemplateMessageFn>;
+export type LocaleTemplateMessageFns = Map<string, TemplateMessageFn | false>;
 
 /**
  * Create an interpreter function for template locale message.
  *
  * `"a {{b}} c"` => `` `a ${args.b} c` ``
  */
-export const createTemplateMessageFn = (message: string): TemplateMessageFn => {
+export const createTemplateMessageFn = (
+  message: string
+): TemplateMessageFn | false => {
   const slices: string[] = [];
   const keys: string[] = [];
   const matchArgs = /{{(\S+?)}}/gi;
@@ -23,7 +25,7 @@ export const createTemplateMessageFn = (message: string): TemplateMessageFn => {
   slices.push(message.slice(pointer));
 
   if (keys.length <= 0) {
-    return () => message;
+    return false;
   }
 
   return (args: TFunctionArgs): string => {

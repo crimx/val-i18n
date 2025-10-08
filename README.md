@@ -123,36 +123,38 @@ i18n.t("fav_fruit", ["apple", "banana"]); // I love apple and banana
 
 ### Pluralization
 
-Message formatting supports a special key `:option` whose value will be appended to the key-path.
-
-For example:
-
-```ts
-i18n.t("a.b.c", { ":option": "d" });
-```
-
-It will look for `"a.b.c.d"` and fallback to `"a.b.c.other"` if not found.
-
-So for pluralization we can simply use `:option` as number count.
+You can easily do pluralization with [Modifier Matching](#modifier-matching).
 
 ```ts
 import { I18n, type Locales } from "val-i18n";
 
 const locales: Locales = {
   en: {
-    apples: {
-      0: "No apple",
-      1: "An apple",
-      other: "{{:option}} apples",
-    },
+    apple: "{{@}} apples", // fallback
+    "apple@0": "No apple", // matching { "@": 0 } or { "@": "0" }
+    "apple@1": "An apple", // matching { "@": 1 } or { "@": "1" }
   },
 };
 
 const i18n = new I18n("en", locales);
-i18n.t("apples", { ":option": 0 }); // No apple
-i18n.t("apples", { ":option": 1 }); // An apple
-i18n.t("apples", { ":option": 3 }); // 3 apples
+i18n.t("apples", { "@": 0 }); // No apple
+i18n.t("apples", { "@": 1 }); // An apple
+i18n.t("apples", { "@": 3 }); // 3 apples
 ```
+
+### Modifier Matching
+
+You can use `@` to match different modifiers.
+
+For example:
+
+```ts
+i18n.t("a.b.c", { "@": "d" });
+```
+
+It will look for `"a.b.c@d"` and fallback to `"a.b.c"` if not found.
+
+See [Pluralization](#pluralization) for more examples.
 
 ### Reactive I18n
 
@@ -290,3 +292,7 @@ For more advance usages checkout [val-i18n-svelte](https://github.com/crimx/val-
 It is recommended to also install [`val-i18n-react`](https://github.com/crimx/val-i18n-react) which includes some handy hooks.
 
 Or you can just use the hooks for `value-enhancer`: [`use-value-enhancer`](https://github.com/crimx/use-value-enhancer).
+
+## VSCode Extension
+
+`val-i18n` is compatible with [i18n Ally](https://github.com/lokalise/i18n-ally), a popular VSCode extension for i18n. You can use it to manage your locale files.

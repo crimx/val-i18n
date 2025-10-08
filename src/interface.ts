@@ -11,7 +11,7 @@ export type Locales = { readonly [lang: LocaleLang]: Locale };
 /** Optional `args` object for t function */
 export type TFunctionArgs = {
   readonly [key: string | number]: any;
-  readonly [":option"]?: string | number;
+  readonly ["@"]?: string | number;
 };
 
 /**
